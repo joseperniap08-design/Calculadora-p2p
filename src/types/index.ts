@@ -1,6 +1,6 @@
 export type CommissionRate = 0.0025 | 0.0035;
-// Prueba de sincronización
-export type Currency = 'USDT' | 'VES' | 'USD';
+
+export type Currency = 'VES' | 'USD';
 
 export interface CalculatorInputs {
   capital: number;
