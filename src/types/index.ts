@@ -1,0 +1,54 @@
+export type CommissionRate = 0.0025 | 0.0035;
+// Prueba de sincronización
+export type Currency = 'USDT' | 'VES' | 'USD';
+
+export interface CalculatorInputs {
+  capital: number;
+  buyRate: number;
+  sellRate: number;
+  commissionRate: CommissionRate;
+}
+
+export interface BuyResults {
+  usdtBought: number;
+  buyCommission: number;
+  usdtAfterCommission: number;
+}
+
+export interface SellResults {
+  grossTotal: number;
+  sellCommission: number;
+  netTotal: number;
+}
+
+export interface CalculationResults {
+  buy: BuyResults;
+  sell: SellResults;
+  netProfit: number;
+  netProfitUsdt: number;
+  roi: number;
+  newCapital: number;
+  isProfitable: boolean;
+}
+
+export interface EarningsHistoryPoint {
+  date: string;
+  label: string;
+  profit: number;
+}
+
+export interface Operacion {
+  id: number;
+  fecha: string;
+  tasa: number;
+  tasaCompra?: number;
+  ganancia: number;
+}
+
+export type NavTab = 'calculadora' | 'historial' | 'meta';
+
+export interface CycleProjection {
+  gananciaPorCiclo: number;
+  ciclosNecesarios: number;
+  isValid: boolean;
+}
