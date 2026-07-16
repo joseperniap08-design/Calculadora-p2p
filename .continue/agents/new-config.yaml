@@ -1,0 +1,4 @@
+models:
+  - name: Llama 3
+    provider: ollama
+    model: llama3
