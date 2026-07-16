@@ -54,14 +54,14 @@ export function SellSection({
 
       <div className="flex-1 space-y-2 rounded-xl bg-slate-800/40 p-3">
         <div className="flex items-center justify-between">
-          <span className="text-xs text-slate-400">Total Bruto</span>
+          <span className="text-xs text-slate-400">Ganancia bruta</span>
           <span className="text-sm font-bold text-blue-400">
             {formatMoney(display.grossTotal)}
           </span>
         </div>
         <div className="flex items-center justify-between">
           <span className="text-xs text-slate-400">
-            Comisión de Venta ({commissionPercent}%)
+            Comisión por operación ({commissionPercent}%)
           </span>
           <span className="text-sm font-semibold text-slate-300">
             {formatMoney(display.sellCommission)}

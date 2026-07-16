@@ -26,9 +26,15 @@ export interface CalculationResults {
   sell: SellResults;
   netProfit: number;
   netProfitUsdt: number;
-  roi: number;
+  profitSpread: number;
   newCapital: number;
   isProfitable: boolean;
+}
+
+export interface CurrencyRates {
+  buyRate: number;
+  sellRate: number;
+  commissionRate: CommissionRate;
 }
 
 export interface EarningsHistoryPoint {
@@ -43,6 +49,7 @@ export interface Operacion {
   tasa: number;
   tasaCompra?: number;
   ganancia: number;
+  currency: Currency;
 }
 
 export type NavTab = 'calculadora' | 'historial' | 'meta';

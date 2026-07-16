@@ -59,12 +59,6 @@ export function BuySection({
             {formatUsdt(results.buyCommission)}
           </span>
         </div>
-        <div className="flex items-center justify-between">
-          <span className="text-xs text-slate-400">USDT Tras Comisión</span>
-          <span className="text-sm font-semibold text-slate-300">
-            {formatUsdt(results.usdtAfterCommission)}
-          </span>
-        </div>
       </div>
 
       <Button variant="green" fullWidth className="mt-auto">

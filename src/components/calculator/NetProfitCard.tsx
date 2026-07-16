@@ -54,8 +54,8 @@ export function NetProfitCard({ capital, sellRate, currency, results }: NetProfi
 
       <div className="grid grid-cols-3 gap-3 rounded-xl bg-slate-800/40 p-3">
         <div className="text-center">
-          <p className="text-[10px] uppercase tracking-wider text-slate-500">ROI</p>
-          <p className="text-sm font-bold text-white">{formatPercent(results.roi)}</p>
+          <p className="text-[10px] uppercase tracking-wider text-slate-500">Spread de Ganancia</p>
+          <p className="text-sm font-bold text-white">{formatPercent(results.profitSpread)}</p>
         </div>
         <div className="text-center">
           <p className="text-[10px] uppercase tracking-wider text-slate-500">Nuevo Capital</p>

@@ -70,7 +70,7 @@ export function calculateP2PResults(inputs: CalculatorInputs): CalculationResult
   const netProfitRaw = sell.netTotal - capitalBs;
   const netProfit = ceilCurrency(netProfitRaw);
   const netProfitUsdt = buyRate > 0 ? ceilUsdt(netProfitRaw / buyRate) : 0;
-  const roi = capitalBs > 0 ? (netProfit / capitalBs) * 100 : 0;
+  const profitSpread = buyRate > 0 ? ((sellRate - buyRate) / buyRate) * 100 : 0;
   const newCapital = roundCurrency(capital + netProfitUsdt);
 
   return {
@@ -78,7 +78,7 @@ export function calculateP2PResults(inputs: CalculatorInputs): CalculationResult
     sell,
     netProfit,
     netProfitUsdt,
-    roi,
+    profitSpread,
     newCapital,
     isProfitable: netProfit > 0,
   };

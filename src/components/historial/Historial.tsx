@@ -12,7 +12,6 @@ import {
 export function Historial() {
   const historial = useStore((s) => s.historial);
   const eliminarOperacion = useStore((s) => s.eliminarOperacion);
-  const currency = useStore((s) => s.currency);
 
   const historialOrdenado = useMemo(
     () => [...historial].sort((a, b) => b.id - a.id),
@@ -64,13 +63,14 @@ export function Historial() {
             <tbody>
               {historialOrdenado.map((op) => {
                 const buyRate = op.tasaCompra ?? op.tasa;
+                const opCurrency = op.currency ?? 'VES';
                 const displayProfitUsdt = getProfitFromOperation(op.ganancia, buyRate);
 
                 return (
                   <tr key={op.id} className="border-b border-gray-800/60 last:border-0">
                     <td className="py-3 pr-4 text-gray-300">{op.fecha}</td>
                     <td className="py-3 pr-4 text-gray-300">
-                      {formatRate(op.tasa)} {getRateSuffix(currency)}
+                      {formatRate(op.tasa)} {getRateSuffix(opCurrency)}
                     </td>
                     <td className="py-3 pr-4">
                       <p
@@ -81,7 +81,7 @@ export function Historial() {
                         {formatProfitUsdt(displayProfitUsdt)}
                       </p>
                       <p className="text-xs text-slate-500">
-                        {formatProfitLocal(op.ganancia, currency)}
+                        {formatProfitLocal(op.ganancia, opCurrency)}
                       </p>
                     </td>
                     <td className="py-3 text-right">

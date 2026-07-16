@@ -53,6 +53,7 @@ export function Calculator() {
       tasa: sellRate,
       tasaCompra: buyRate,
       ganancia: results.netProfit,
+      currency,
     });
   };
 
@@ -84,16 +85,12 @@ export function Calculator() {
         ) : (
           <>
             <div className="flex items-center justify-between gap-3">
-              {currency === 'VES' && (
-                <CommissionSelector value={commissionRate} onChange={setCommissionRate} />
-              )}
+              <CommissionSelector value={commissionRate} onChange={setCommissionRate} />
 
               <button
                 type="button"
                 onClick={() => setActiveTab('historial')}
-                className={`flex items-center gap-1.5 rounded-full border border-slate-700/60 bg-slate-800/60 px-3 py-1.5 text-xs font-medium text-slate-300 transition-colors hover:bg-slate-700/60 ${
-                  currency !== 'VES' ? 'ml-auto' : ''
-                }`}
+                className="flex items-center gap-1.5 rounded-full border border-slate-700/60 bg-slate-800/60 px-3 py-1.5 text-xs font-medium text-slate-300 transition-colors hover:bg-slate-700/60"
               >
                 <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
