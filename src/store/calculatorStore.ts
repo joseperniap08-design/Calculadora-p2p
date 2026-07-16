@@ -26,6 +26,66 @@ function createDefaultRatesByCurrency(): Record<Currency, CurrencyRates> {
   ) as Record<Currency, CurrencyRates>;
 }
 
+interface PersistedCalculatorState {
+  capital: number;
+  ratesByCurrency: Record<Currency, CurrencyRates>;
+  currency: Currency;
+  historial: Operacion[];
+}
+
+function isCommissionRate(value: unknown): value is CommissionRate {
+  return value === 0.0025 || value === 0.0035;
+}
+
+function isCurrency(value: unknown): value is Currency {
+  return typeof value === 'string' && CURRENCY_OPTIONS.includes(value as Currency);
+}
+
+function migratePersistedState(persistedState: unknown): PersistedCalculatorState {
+  const state = (persistedState ?? {}) as Record<string, unknown>;
+  const ratesByCurrency = createDefaultRatesByCurrency();
+  const currency = isCurrency(state.currency) ? state.currency : 'VES';
+
+  if (typeof state.buyRate === 'number' && typeof state.sellRate === 'number') {
+    ratesByCurrency[currency] = {
+      buyRate: state.buyRate,
+      sellRate: state.sellRate,
+      commissionRate: isCommissionRate(state.commissionRate)
+        ? state.commissionRate
+        : ratesByCurrency[currency].commissionRate,
+    };
+  } else if (state.ratesByCurrency && typeof state.ratesByCurrency === 'object') {
+    const savedRates = state.ratesByCurrency as Partial<Record<Currency, CurrencyRates>>;
+
+    for (const option of CURRENCY_OPTIONS) {
+      const saved = savedRates[option];
+      if (!saved) continue;
+
+      ratesByCurrency[option] = {
+        buyRate: typeof saved.buyRate === 'number' ? saved.buyRate : ratesByCurrency[option].buyRate,
+        sellRate: typeof saved.sellRate === 'number' ? saved.sellRate : ratesByCurrency[option].sellRate,
+        commissionRate: isCommissionRate(saved.commissionRate)
+          ? saved.commissionRate
+          : ratesByCurrency[option].commissionRate,
+      };
+    }
+  }
+
+  const historial = Array.isArray(state.historial)
+    ? (state.historial as Operacion[]).map((op) => ({
+        ...op,
+        currency: isCurrency(op.currency) ? op.currency : currency,
+      }))
+    : [];
+
+  return {
+    capital: typeof state.capital === 'number' ? state.capital : 500,
+    ratesByCurrency,
+    currency,
+    historial,
+  };
+}
+
 function updateCurrencyRates(
   ratesByCurrency: Record<Currency, CurrencyRates>,
   currency: Currency,
@@ -100,35 +160,9 @@ export const useCalculatorStore = create<CalculatorState>()(
     {
       name: 'p2p-historial-storage',
       version: 2,
-      migrate: (persistedState) => {
-        const state = persistedState as Record<string, unknown>;
-        const ratesByCurrency = createDefaultRatesByCurrency();
-        const currency = (state.currency as Currency) ?? 'VES';
-
-        if (typeof state.buyRate === 'number' && typeof state.sellRate === 'number') {
-          ratesByCurrency[currency] = {
-            buyRate: state.buyRate as number,
-            sellRate: state.sellRate as number,
-            commissionRate: (state.commissionRate as CommissionRate) ?? ratesByCurrency[currency].commissionRate,
-          };
-        }
-
-        const historial = Array.isArray(state.historial)
-          ? (state.historial as Operacion[]).map((op) => ({
-              ...op,
-              currency: op.currency ?? currency,
-            }))
-          : [];
-
-        return {
-          capital: state.capital ?? 500,
-          ratesByCurrency,
-          currency,
-          activeTab: state.activeTab ?? 'calculadora',
-          historial,
-        };
-      },
-      partialize: (state) => ({
+      migrate: (persistedState): PersistedCalculatorState =>
+        migratePersistedState(persistedState),
+      partialize: (state): PersistedCalculatorState => ({
         historial: state.historial,
         capital: state.capital,
         ratesByCurrency: state.ratesByCurrency,
