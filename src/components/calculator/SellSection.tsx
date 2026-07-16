@@ -7,10 +7,11 @@ import { getDisplayAmounts } from '@/utils/currencyDisplay';
 interface SellSectionProps {
   sellRate: number;
   capital: number;
-  buyRate: number;
   commissionRate: CommissionRate;
   currency: Currency;
   results: SellResults;
+  netProfitUsdt: number;
+  netProfitLocal: number;
   onSellRateChange: (value: number) => void;
   onGuardar: () => void;
 }
@@ -18,15 +19,22 @@ interface SellSectionProps {
 export function SellSection({
   sellRate,
   capital,
-  buyRate,
   commissionRate,
   currency,
   results,
+  netProfitUsdt,
+  netProfitLocal,
   onSellRateChange,
   onGuardar,
 }: SellSectionProps) {
   const commissionPercent = (commissionRate * 100).toFixed(2);
-  const display = getDisplayAmounts(capital, results, buyRate, sellRate, currency);
+  const display = getDisplayAmounts(
+    capital,
+    results,
+    sellRate,
+    netProfitUsdt,
+    netProfitLocal,
+  );
 
   return (
     <div className="glass-card flex h-full flex-col gap-4 border-blue-500/20 p-4 glow-blue">
@@ -41,14 +49,14 @@ export function SellSection({
       />
 
       <div aria-hidden className="pointer-events-none invisible">
-        <InputField label="Capital" value={0} onChange={() => {}} suffix={getRateSuffix(currency)} accent="blue" />
+        <InputField label="Capital" value={0} onChange={() => {}} suffix="USDT" accent="blue" />
       </div>
 
       <div className="flex-1 space-y-2 rounded-xl bg-slate-800/40 p-3">
         <div className="flex items-center justify-between">
           <span className="text-xs text-slate-400">Total Bruto</span>
           <span className="text-sm font-bold text-blue-400">
-            {formatMoney(display.grossTotal, currency)}
+            {formatMoney(display.grossTotal)}
           </span>
         </div>
         <div className="flex items-center justify-between">
@@ -56,13 +64,13 @@ export function SellSection({
             Comisión de Venta ({commissionPercent}%)
           </span>
           <span className="text-sm font-semibold text-slate-300">
-            {formatMoney(display.sellCommission, currency)}
+            {formatMoney(display.sellCommission)}
           </span>
         </div>
         <div className="flex items-center justify-between border-t border-slate-700/50 pt-2">
           <span className="text-xs font-medium text-slate-300">Total Obtenido</span>
           <span className="text-sm font-bold text-blue-400">
-            {formatMoney(display.netTotal, currency)}
+            {formatMoney(display.netTotal)}
           </span>
         </div>
       </div>

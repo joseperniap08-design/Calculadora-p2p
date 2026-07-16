@@ -8,24 +8,21 @@ import {
   ResponsiveContainer,
   ReferenceLine,
 } from 'recharts';
-import type { Currency, EarningsHistoryPoint } from '@/types';
-import { formatProfit, getChartUnit } from '@/utils/formatters';
+import type { EarningsHistoryPoint } from '@/types';
+import { formatProfitUsdt } from '@/utils/formatters';
 
 interface EarningsChartProps {
   data: EarningsHistoryPoint[];
-  currency: Currency;
 }
 
 function CustomTooltip({
   active,
   payload,
   label,
-  currency,
 }: {
   active?: boolean;
   payload?: { value: number }[];
   label?: string;
-  currency: Currency;
 }) {
   if (!active || !payload?.length) return null;
 
@@ -33,19 +30,17 @@ function CustomTooltip({
     <div className="rounded-lg border border-blue-500/30 bg-slate-900/95 px-3 py-2 shadow-xl backdrop-blur-sm">
       <p className="text-xs text-slate-400">{label}</p>
       <p className="text-sm font-bold text-blue-400">
-        {formatProfit(payload[0].value, currency)}
+        {formatProfitUsdt(payload[0].value)}
       </p>
     </div>
   );
 }
 
-export function EarningsChart({ data, currency }: EarningsChartProps) {
+export function EarningsChart({ data }: EarningsChartProps) {
   const profits = data.map((d) => d.profit);
   const minProfit = Math.min(...profits, -3);
   const maxProfit = Math.max(...profits, 3);
   const padding = 0.5;
-  const displayUnit = getChartUnit(currency);
-  const decimalPlaces = currency === 'VES' ? 0 : currency === 'USD' ? 3 : 2;
 
   return (
     <div className="glass-card relative p-4 pb-6">
@@ -73,10 +68,10 @@ export function EarningsChart({ data, currency }: EarningsChartProps) {
               tick={{ fill: '#94a3b8', fontSize: 10 }}
               axisLine={{ stroke: 'rgba(148, 163, 184, 0.2)' }}
               tickLine={false}
-              tickFormatter={(v: number) => `${v.toFixed(decimalPlaces)} ${displayUnit}`}
+              tickFormatter={(v: number) => `${v.toFixed(3)} USDT`}
             />
             <ReferenceLine y={0} stroke="rgba(148, 163, 184, 0.3)" strokeDasharray="3 3" />
-            <Tooltip content={<CustomTooltip currency={currency} />} />
+            <Tooltip content={<CustomTooltip />} />
             <Line
               type="monotone"
               dataKey="profit"

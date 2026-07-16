@@ -2,15 +2,13 @@ import { useMemo, useState } from 'react';
 import { InputField } from '@/components/ui/InputField';
 import { Button } from '@/components/ui/Button';
 import { calculateCycleProjection } from '@/utils/calculations';
-import type { Currency } from '@/types';
 import { formatMoney } from '@/utils/formatters';
 
 interface MetaProjectionSectionProps {
-  currency: Currency;
   gananciaPorCiclo: number;
 }
 
-export function MetaProjectionSection({ currency, gananciaPorCiclo }: MetaProjectionSectionProps) {
+export function MetaProjectionSection({ gananciaPorCiclo }: MetaProjectionSectionProps) {
   const [metaGoal, setMetaGoal] = useState(0);
   const [showResult, setShowResult] = useState(false);
 
@@ -32,10 +30,10 @@ export function MetaProjectionSection({ currency, gananciaPorCiclo }: MetaProjec
       </h3>
 
       <InputField
-        label={`Ganancia Meta (${currency})`}
+        label="Ganancia Meta (USDT)"
         value={metaGoal}
         onChange={setMetaGoal}
-        suffix={currency}
+        suffix="USDT"
         accent="green"
       />
 
@@ -48,7 +46,7 @@ export function MetaProjectionSection({ currency, gananciaPorCiclo }: MetaProjec
           {projection.isValid ? (
             <p className="text-sm leading-relaxed text-slate-300">
               Para ganar{' '}
-              <span className="font-bold text-green-400">{formatMoney(metaGoal, currency)}</span>, necesitas
+              <span className="font-bold text-green-400">{formatMoney(metaGoal)}</span>, necesitas
               completar{' '}
               <span className="font-bold text-green-400">{projection.ciclosNecesarios}</span>{' '}
               {projection.ciclosNecesarios === 1 ? 'ciclo' : 'ciclos'} con tu capital actual.

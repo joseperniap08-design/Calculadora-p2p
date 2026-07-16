@@ -20,62 +20,31 @@ export function formatCurrency(value: number): string {
   return `${currencyFormatter.format(value)} USDT`;
 }
 
-export function formatVes(value: number): string {
-  return `${currencyFormatter.format(value)} Bs`;
-}
-
-export function formatUsd(value: number): string {
-  return `${currencyFormatter.format(value)} USD`;
-}
-
-export function isVesCurrency(currency: Currency): boolean {
-  return currency === 'VES';
-}
-
-export function isUsdCurrency(currency: Currency): boolean {
-  return currency === 'USD';
-}
-
-/** Solo VES convierte capital entre Bs y USDT. USD opera con capital en USDT y tasas en USD. */
-export function isFiatCurrency(currency: Currency): boolean {
-  return currency === 'VES';
+export function formatLocalCurrency(value: number, currency: Currency): string {
+  const suffix = getRateSuffix(currency);
+  return `${currencyFormatter.format(value)} ${suffix}`;
 }
 
 export function getRateSuffix(currency: Currency): string {
-  return currency === 'USD' ? 'USD' : 'Bs';
+  return currency === 'VES' ? 'Bs' : currency;
 }
 
-export function getChartUnit(currency: Currency): string {
-  if (currency === 'VES') return 'Bs';
-  return 'USDT';
-}
-
-export function getProfitFromOperation(
-  ganancia: number,
-  buyRate: number,
-  currency: Currency,
-): number {
-  if (currency === 'VES') return ganancia;
+export function getProfitFromOperation(ganancia: number, buyRate: number): number {
   return buyRate > 0 ? ceilUsdt(ganancia / buyRate) : 0;
 }
 
-export function formatMoney(value: number, currency: Currency): string {
-  if (currency === 'VES') return formatVes(value);
-  if (currency === 'USD') return formatUsd(value);
+export function formatMoney(value: number): string {
   return formatCurrency(value);
 }
 
-export function formatProfitBs(value: number): string {
+export function formatProfitUsdt(value: number): string {
   const sign = value >= 0 ? '+' : '';
-  return `${sign}${formatVes(value)}`;
+  return `${sign}${formatUsdt(value)}`;
 }
 
-export function formatProfit(value: number, currency: Currency): string {
+export function formatProfitLocal(value: number, currency: Currency): string {
   const sign = value >= 0 ? '+' : '';
-  if (currency === 'USD' || currency === 'USDT') {
-    return `${sign}${formatUsdt(value)}`;
-  }
-  return `${sign}${formatMoney(value, currency)}`;
+  return `${sign}${formatLocalCurrency(value, currency)}`;
 }
 
 export function formatUsdt(value: number): string {

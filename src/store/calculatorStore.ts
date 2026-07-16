@@ -3,6 +3,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { CommissionRate, Currency, EarningsHistoryPoint, NavTab, Operacion } from '@/types';
 import { calculateP2PResults } from '@/utils/calculations';
+import { CURRENCY_CONFIG } from '@/utils/currencies';
 import { roundCurrency } from '@/utils/formatters';
 
 interface CalculatorState {
@@ -28,10 +29,10 @@ export const useCalculatorStore = create<CalculatorState>()(
   persist(
     (set) => ({
       capital: 500,
-      buyRate: 817,
-      sellRate: 825,
-      commissionRate: 0.0025,
-      currency: 'USDT',
+      buyRate: CURRENCY_CONFIG.VES.defaultBuyRate,
+      sellRate: CURRENCY_CONFIG.VES.defaultSellRate,
+      commissionRate: CURRENCY_CONFIG.VES.commissionRate,
+      currency: 'VES',
       activeTab: 'calculadora',
       historial: [],
 
@@ -43,25 +44,13 @@ export const useCalculatorStore = create<CalculatorState>()(
         set((state) => {
           if (value === state.currency) return state;
 
-          if (value === 'USD') {
-            return {
-              currency: 'USD',
-              buyRate: 1.025,
-              sellRate: 1.035,
-              commissionRate: 0.0035,
-            };
-          }
-
-          if (state.currency === 'USD' && (value === 'VES' || value === 'USDT')) {
-            return {
-              currency: value,
-              buyRate: 817,
-              sellRate: 825,
-              commissionRate: 0.0025,
-            };
-          }
-
-          return { currency: value };
+          const config = CURRENCY_CONFIG[value];
+          return {
+            currency: value,
+            buyRate: config.defaultBuyRate,
+            sellRate: config.defaultSellRate,
+            commissionRate: config.commissionRate,
+          };
         }),
       setActiveTab: (tab) => set({ activeTab: tab }),
 
@@ -82,6 +71,10 @@ export const useCalculatorStore = create<CalculatorState>()(
       partialize: (state) => ({
         historial: state.historial,
         capital: state.capital,
+        buyRate: state.buyRate,
+        sellRate: state.sellRate,
+        commissionRate: state.commissionRate,
+        currency: state.currency,
       }),
     },
   ),

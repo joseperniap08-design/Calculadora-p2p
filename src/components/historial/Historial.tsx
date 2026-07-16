@@ -1,7 +1,13 @@
 import { useMemo } from 'react';
 import { useStore } from '@/store/calculatorStore';
 import { EarningsChart } from '@/components/chart/EarningsChart';
-import { formatProfit, formatRate, getProfitFromOperation, getRateSuffix } from '@/utils/formatters';
+import {
+  formatProfitLocal,
+  formatProfitUsdt,
+  formatRate,
+  getProfitFromOperation,
+  getRateSuffix,
+} from '@/utils/formatters';
 
 export function Historial() {
   const historial = useStore((s) => s.historial);
@@ -24,10 +30,9 @@ export function Historial() {
           profit: getProfitFromOperation(
             op.ganancia,
             op.tasaCompra ?? op.tasa,
-            currency,
           ),
         })),
-    [historial, currency],
+    [historial],
   );
 
   if (historial.length === 0) {
@@ -40,7 +45,7 @@ export function Historial() {
 
   return (
     <div className="space-y-6">
-      <EarningsChart data={chartData} currency={currency} />
+      <EarningsChart data={chartData} />
 
       <div className="rounded-2xl border border-gray-800 bg-gray-900/50 p-4 sm:p-6">
         <h2 className="mb-4 text-lg font-semibold text-white">Operaciones</h2>
@@ -59,7 +64,7 @@ export function Historial() {
             <tbody>
               {historialOrdenado.map((op) => {
                 const buyRate = op.tasaCompra ?? op.tasa;
-                const displayProfit = getProfitFromOperation(op.ganancia, buyRate, currency);
+                const displayProfitUsdt = getProfitFromOperation(op.ganancia, buyRate);
 
                 return (
                   <tr key={op.id} className="border-b border-gray-800/60 last:border-0">
@@ -67,12 +72,17 @@ export function Historial() {
                     <td className="py-3 pr-4 text-gray-300">
                       {formatRate(op.tasa)} {getRateSuffix(currency)}
                     </td>
-                    <td
-                      className={`py-3 pr-4 font-medium ${
-                        displayProfit >= 0 ? 'text-green-400' : 'text-red-400'
-                      }`}
-                    >
-                      {formatProfit(displayProfit, currency)}
+                    <td className="py-3 pr-4">
+                      <p
+                        className={`font-medium ${
+                          displayProfitUsdt >= 0 ? 'text-green-400' : 'text-red-400'
+                        }`}
+                      >
+                        {formatProfitUsdt(displayProfitUsdt)}
+                      </p>
+                      <p className="text-xs text-slate-500">
+                        {formatProfitLocal(op.ganancia, currency)}
+                      </p>
                     </td>
                     <td className="py-3 text-right">
                       <button

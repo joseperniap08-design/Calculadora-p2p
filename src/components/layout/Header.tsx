@@ -1,4 +1,5 @@
 import type { Currency } from '@/types';
+import { CURRENCY_OPTIONS } from '@/utils/currencies';
 
 interface HeaderProps {
   currency: Currency;
@@ -33,9 +34,11 @@ export function Header({ currency, onCurrencyChange, onMenuOpen }: HeaderProps) 
           onChange={(e) => onCurrencyChange(e.target.value as Currency)}
           className="cursor-pointer rounded-lg border border-slate-700/60 bg-slate-800/60 px-2 py-1.5 text-xs font-semibold text-white outline-none focus:ring-2 focus:ring-blue-500/50"
         >
-          <option value="USDT">USDT</option>
-          <option value="VES">VES</option>
-          <option value="USD">USD</option>
+          {CURRENCY_OPTIONS.map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
+          ))}
         </select>
       </div>
     </header>

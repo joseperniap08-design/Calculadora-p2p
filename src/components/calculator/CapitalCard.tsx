@@ -1,12 +1,10 @@
-import type { Currency } from '@/types';
 import { formatMoney } from '@/utils/formatters';
 
 interface CapitalCardProps {
   capital: number;
-  currency: Currency;
 }
 
-export function CapitalCard({ capital, currency }: CapitalCardProps) {
+export function CapitalCard({ capital }: CapitalCardProps) {
   return (
     <div className="glass-card relative overflow-hidden p-5 glow-blue">
       <div className="flex items-center justify-between">
@@ -15,7 +13,7 @@ export function CapitalCard({ capital, currency }: CapitalCardProps) {
             Capital Inicial
           </p>
           <p className="text-3xl font-extrabold text-white sm:text-4xl">
-            {formatMoney(capital, currency)}
+            {formatMoney(capital)}
           </p>
           <p className="text-sm font-medium text-blue-400">Disponible para operar</p>
         </div>

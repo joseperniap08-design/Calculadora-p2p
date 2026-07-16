@@ -13,7 +13,6 @@ import { EarningsChart } from '@/components/chart/EarningsChart';
 import { Historial } from '@/components/historial/Historial';
 import { MetaView } from '@/components/meta/MetaView';
 import { formatDate, getProfitFromOperation } from '@/utils/formatters';
-import { getDisplayAmounts } from '@/utils/currencyDisplay';
 
 export function Calculator() {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -34,14 +33,6 @@ export function Calculator() {
     setActiveTab,
   } = useCalculator();
 
-  const displayCapital = getDisplayAmounts(
-    capital,
-    results.sell,
-    buyRate,
-    sellRate,
-    currency,
-  ).capital;
-
   const chartData = useStore((s) => s.historial)
     .slice()
     .sort((a, b) => a.id - b.id)
@@ -52,7 +43,6 @@ export function Calculator() {
       profit: getProfitFromOperation(
         op.ganancia,
         op.tasaCompra ?? op.tasa,
-        currency,
       ),
     }));
 
@@ -87,7 +77,6 @@ export function Calculator() {
         ) : activeTab === 'meta' ? (
           <MetaView
             capital={capital}
-            buyRate={buyRate}
             sellRate={sellRate}
             currency={currency}
             results={results}
@@ -95,12 +84,16 @@ export function Calculator() {
         ) : (
           <>
             <div className="flex items-center justify-between gap-3">
-              <CommissionSelector value={commissionRate} onChange={setCommissionRate} />
+              {currency === 'VES' && (
+                <CommissionSelector value={commissionRate} onChange={setCommissionRate} />
+              )}
 
               <button
                 type="button"
                 onClick={() => setActiveTab('historial')}
-                className="flex items-center gap-1.5 rounded-full border border-slate-700/60 bg-slate-800/60 px-3 py-1.5 text-xs font-medium text-slate-300 transition-colors hover:bg-slate-700/60"
+                className={`flex items-center gap-1.5 rounded-full border border-slate-700/60 bg-slate-800/60 px-3 py-1.5 text-xs font-medium text-slate-300 transition-colors hover:bg-slate-700/60 ${
+                  currency !== 'VES' ? 'ml-auto' : ''
+                }`}
               >
                 <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -109,7 +102,7 @@ export function Calculator() {
               </button>
             </div>
 
-            <CapitalCard capital={displayCapital} currency={currency} />
+            <CapitalCard capital={capital} />
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:items-stretch">
               <BuySection
@@ -125,10 +118,11 @@ export function Calculator() {
               <SellSection
                 sellRate={sellRate}
                 capital={capital}
-                buyRate={buyRate}
                 commissionRate={commissionRate}
                 currency={currency}
                 results={results.sell}
+                netProfitUsdt={results.netProfitUsdt}
+                netProfitLocal={results.netProfit}
                 onSellRateChange={setSellRate}
                 onGuardar={handleGuardarOperacion}
               />
@@ -136,13 +130,12 @@ export function Calculator() {
 
             <NetProfitCard
               capital={capital}
-              buyRate={buyRate}
               sellRate={sellRate}
               currency={currency}
               results={results}
             />
 
-            <EarningsChart data={chartData} currency={currency} />
+            <EarningsChart data={chartData} />
           </>
         )}
       </main>

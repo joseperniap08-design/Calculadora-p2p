@@ -1,7 +1,7 @@
 import { InputField } from '@/components/ui/InputField';
 import { Button } from '@/components/ui/Button';
 import type { BuyResults, CommissionRate, Currency } from '@/types';
-import { formatUsdt, getRateSuffix, isVesCurrency } from '@/utils/formatters';
+import { formatUsdt, getRateSuffix } from '@/utils/formatters';
 
 interface BuySectionProps {
   buyRate: number;
@@ -23,17 +23,6 @@ export function BuySection({
   onCapitalChange,
 }: BuySectionProps) {
   const commissionPercent = (commissionRate * 100).toFixed(2);
-  const displayCapital = isVesCurrency(currency)
-    ? Math.round(capital * buyRate * 100) / 100
-    : capital;
-
-  const handleCapitalChange = (value: number) => {
-    if (isVesCurrency(currency) && buyRate > 0) {
-      onCapitalChange(value / buyRate);
-    } else {
-      onCapitalChange(value);
-    }
-  };
 
   return (
     <div className="glass-card flex h-full flex-col gap-4 border-green-500/20 p-4 glow-green">
@@ -49,9 +38,9 @@ export function BuySection({
 
       <InputField
         label="Capital"
-        value={displayCapital}
-        onChange={handleCapitalChange}
-        suffix={currency}
+        value={capital}
+        onChange={onCapitalChange}
+        suffix="USDT"
         accent="green"
       />
 

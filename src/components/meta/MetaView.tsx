@@ -2,19 +2,15 @@ import { CapitalCard } from '@/components/calculator/CapitalCard';
 import { MetaProjectionSection } from '@/components/calculator/MetaProjectionSection';
 import { NetProfitCard } from '@/components/calculator/NetProfitCard';
 import type { CalculationResults, Currency } from '@/types';
-import { getDisplayAmounts } from '@/utils/currencyDisplay';
 
 interface MetaViewProps {
   capital: number;
-  buyRate: number;
   sellRate: number;
   currency: Currency;
   results: CalculationResults;
 }
 
-export function MetaView({ capital, buyRate, sellRate, currency, results }: MetaViewProps) {
-  const display = getDisplayAmounts(capital, results.sell, buyRate, sellRate, currency);
-
+export function MetaView({ capital, sellRate, currency, results }: MetaViewProps) {
   return (
     <div className="space-y-4">
       <div className="glass-card border-green-500/30 p-4 glow-green">
@@ -24,15 +20,14 @@ export function MetaView({ capital, buyRate, sellRate, currency, results }: Meta
         </p>
       </div>
 
-      <CapitalCard capital={display.capital} currency={currency} />
+      <CapitalCard capital={capital} />
       <NetProfitCard
         capital={capital}
-        buyRate={buyRate}
         sellRate={sellRate}
         currency={currency}
         results={results}
       />
-      <MetaProjectionSection currency={currency} gananciaPorCiclo={display.netProfit} />
+      <MetaProjectionSection gananciaPorCiclo={results.netProfitUsdt} />
     </div>
   );
 }

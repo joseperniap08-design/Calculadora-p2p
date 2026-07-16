@@ -1,17 +1,22 @@
 import type { CalculationResults, Currency } from '@/types';
-import { formatMoney, formatPercent, formatProfit, formatUsdt } from '@/utils/formatters';
+import { formatMoney, formatPercent, formatProfitLocal, formatProfitUsdt } from '@/utils/formatters';
 import { getDisplayAmounts } from '@/utils/currencyDisplay';
 
 interface NetProfitCardProps {
   capital: number;
-  buyRate: number;
   sellRate: number;
   currency: Currency;
   results: CalculationResults;
 }
 
-export function NetProfitCard({ capital, buyRate, sellRate, currency, results }: NetProfitCardProps) {
-  const display = getDisplayAmounts(capital, results.sell, buyRate, sellRate, currency);
+export function NetProfitCard({ capital, sellRate, currency, results }: NetProfitCardProps) {
+  const display = getDisplayAmounts(
+    capital,
+    results.sell,
+    sellRate,
+    results.netProfitUsdt,
+    results.netProfit,
+  );
   const isProfitable = results.netProfit > 0;
 
   return (
@@ -20,13 +25,13 @@ export function NetProfitCard({ capital, buyRate, sellRate, currency, results }:
         Ganancia Neta
       </p>
 
-      <div className="mb-3 flex items-center gap-3">
+      <div className="mb-1 flex items-center gap-3">
         <p
           className={`text-4xl font-extrabold sm:text-5xl ${
             isProfitable ? 'text-green-400' : 'text-red-400'
           }`}
         >
-          {formatProfit(display.netProfit, currency)}
+          {formatProfitUsdt(display.netProfit)}
         </p>
 
         {isProfitable && (
@@ -39,6 +44,14 @@ export function NetProfitCard({ capital, buyRate, sellRate, currency, results }:
         )}
       </div>
 
+      <p
+        className={`mb-3 text-sm font-medium ${
+          isProfitable ? 'text-slate-400' : 'text-slate-500'
+        }`}
+      >
+        {formatProfitLocal(display.netProfitLocal, currency)}
+      </p>
+
       <div className="grid grid-cols-3 gap-3 rounded-xl bg-slate-800/40 p-3">
         <div className="text-center">
           <p className="text-[10px] uppercase tracking-wider text-slate-500">ROI</p>
@@ -46,9 +59,7 @@ export function NetProfitCard({ capital, buyRate, sellRate, currency, results }:
         </div>
         <div className="text-center">
           <p className="text-[10px] uppercase tracking-wider text-slate-500">Nuevo Capital</p>
-          <p className="text-sm font-bold text-white">
-            {currency === 'USD' ? formatUsdt(display.newCapital) : formatMoney(display.newCapital, currency)}
-          </p>
+          <p className="text-sm font-bold text-white">{formatMoney(display.newCapital)}</p>
         </div>
         <div className="text-center">
           <p className="text-[10px] uppercase tracking-wider text-slate-500">Resultado</p>
