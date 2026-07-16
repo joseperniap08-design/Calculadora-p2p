@@ -1,6 +1,6 @@
-export type CommissionRate = 0.0025 | 0.0035;
+export type CommissionRate = 0 | 0.0025 | 0.0035;
 
-export type Currency = 'VES' | 'USD' | 'COP' | 'ARS' | 'BRL' | 'PEN' | 'CLP';
+export type Currency = 'VES' | 'USD' | 'COP' | 'ARS' | 'BRL' | 'PEN' | 'CLP' | 'MXN' | 'BOB' | 'EUR';
 
 export interface CalculatorInputs {
   capital: number;

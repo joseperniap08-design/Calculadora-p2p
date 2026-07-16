@@ -1,7 +1,7 @@
 import { InputField } from '@/components/ui/InputField';
 import { Button } from '@/components/ui/Button';
 import type { BuyResults, CommissionRate, Currency } from '@/types';
-import { formatUsdt, getRateSuffix } from '@/utils/formatters';
+import { formatCommissionPercent, formatLocalCurrency, formatUsdt, getRateSuffix } from '@/utils/formatters';
 
 interface BuySectionProps {
   buyRate: number;
@@ -22,7 +22,7 @@ export function BuySection({
   onBuyRateChange,
   onCapitalChange,
 }: BuySectionProps) {
-  const commissionPercent = (commissionRate * 100).toFixed(2);
+  const commissionPercent = formatCommissionPercent(commissionRate);
 
   return (
     <div className="glass-card flex h-full flex-col gap-4 border-green-500/20 p-4 glow-green">
@@ -53,7 +53,7 @@ export function BuySection({
         </div>
         <div className="flex items-center justify-between">
           <span className="text-xs text-slate-400">
-            Comisión de Compra ({commissionPercent}%)
+            Comisión por operación ({commissionPercent})
           </span>
           <span className="text-sm font-semibold text-slate-300">
             {formatUsdt(results.buyCommission)}

@@ -1,5 +1,5 @@
 import type { Currency } from '@/types';
-import { CURRENCY_OPTIONS } from '@/utils/currencies';
+import { CURRENCY_LABELS, CURRENCY_OPTIONS } from '@/utils/currencies';
 
 interface HeaderProps {
   currency: Currency;
@@ -36,7 +36,7 @@ export function Header({ currency, onCurrencyChange, onMenuOpen }: HeaderProps) 
         >
           {CURRENCY_OPTIONS.map((c) => (
             <option key={c} value={c}>
-              {c}
+              {CURRENCY_LABELS[c]}
             </option>
           ))}
         </select>

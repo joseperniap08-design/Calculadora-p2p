@@ -1,4 +1,4 @@
-import type { Currency } from '@/types';
+import type { CommissionRate, Currency } from '@/types';
 
 const currencyFormatter = new Intl.NumberFormat('es-VE', {
   minimumFractionDigits: 2,
@@ -53,6 +53,11 @@ export function formatUsdt(value: number): string {
 
 export function formatPercent(value: number): string {
   return percentFormatter.format(value / 100);
+}
+
+export function formatCommissionPercent(rate: CommissionRate): string {
+  if (rate === 0) return '0%';
+  return `${(rate * 100).toFixed(2).replace(/\.?0+$/, '')}%`;
 }
 
 export function formatRate(value: number): string {

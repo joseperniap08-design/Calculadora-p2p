@@ -1,40 +1,26 @@
 import { InputField } from '@/components/ui/InputField';
 import { Button } from '@/components/ui/Button';
 import type { CommissionRate, Currency, SellResults } from '@/types';
-import { formatMoney, getRateSuffix } from '@/utils/formatters';
-import { getDisplayAmounts } from '@/utils/currencyDisplay';
+import { formatCommissionPercent, formatLocalCurrency, getRateSuffix } from '@/utils/formatters';
 
 interface SellSectionProps {
   sellRate: number;
-  capital: number;
   commissionRate: CommissionRate;
   currency: Currency;
   results: SellResults;
-  netProfitUsdt: number;
-  netProfitLocal: number;
   onSellRateChange: (value: number) => void;
   onGuardar: () => void;
 }
 
 export function SellSection({
   sellRate,
-  capital,
   commissionRate,
   currency,
   results,
-  netProfitUsdt,
-  netProfitLocal,
   onSellRateChange,
   onGuardar,
 }: SellSectionProps) {
-  const commissionPercent = (commissionRate * 100).toFixed(2);
-  const display = getDisplayAmounts(
-    capital,
-    results,
-    sellRate,
-    netProfitUsdt,
-    netProfitLocal,
-  );
+  const commissionPercent = formatCommissionPercent(commissionRate);
 
   return (
     <div className="glass-card flex h-full flex-col gap-4 border-blue-500/20 p-4 glow-blue">
@@ -56,21 +42,21 @@ export function SellSection({
         <div className="flex items-center justify-between">
           <span className="text-xs text-slate-400">Ganancia bruta</span>
           <span className="text-sm font-bold text-blue-400">
-            {formatMoney(display.grossTotal)}
+            {formatLocalCurrency(results.grossTotal, currency)}
           </span>
         </div>
         <div className="flex items-center justify-between">
           <span className="text-xs text-slate-400">
-            Comisión por operación ({commissionPercent}%)
+            Comisión por operación ({commissionPercent})
           </span>
           <span className="text-sm font-semibold text-slate-300">
-            {formatMoney(display.sellCommission)}
+            {formatLocalCurrency(results.sellCommission, currency)}
           </span>
         </div>
         <div className="flex items-center justify-between border-t border-slate-700/50 pt-2">
           <span className="text-xs font-medium text-slate-300">Total Obtenido</span>
           <span className="text-sm font-bold text-blue-400">
-            {formatMoney(display.netTotal)}
+            {formatLocalCurrency(results.netTotal, currency)}
           </span>
         </div>
       </div>

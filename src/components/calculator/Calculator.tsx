@@ -5,7 +5,6 @@ import { Header } from '@/components/layout/Header';
 import { DrawerMenu } from '@/components/layout/DrawerMenu';
 import { BottomNav } from '@/components/layout/BottomNav';
 import { CapitalCard } from '@/components/calculator/CapitalCard';
-import { CommissionSelector } from '@/components/calculator/CommissionSelector';
 import { BuySection } from '@/components/calculator/BuySection';
 import { SellSection } from '@/components/calculator/SellSection';
 import { NetProfitCard } from '@/components/calculator/NetProfitCard';
@@ -28,7 +27,6 @@ export function Calculator() {
     setCapital,
     setBuyRate,
     setSellRate,
-    setCommissionRate,
     setCurrency,
     setActiveTab,
   } = useCalculator();
@@ -84,9 +82,7 @@ export function Calculator() {
           />
         ) : (
           <>
-            <div className="flex items-center justify-between gap-3">
-              <CommissionSelector value={commissionRate} onChange={setCommissionRate} />
-
+            <div className="flex items-center justify-end gap-3">
               <button
                 type="button"
                 onClick={() => setActiveTab('historial')}
@@ -114,23 +110,15 @@ export function Calculator() {
 
               <SellSection
                 sellRate={sellRate}
-                capital={capital}
                 commissionRate={commissionRate}
                 currency={currency}
                 results={results.sell}
-                netProfitUsdt={results.netProfitUsdt}
-                netProfitLocal={results.netProfit}
                 onSellRateChange={setSellRate}
                 onGuardar={handleGuardarOperacion}
               />
             </div>
 
-            <NetProfitCard
-              capital={capital}
-              sellRate={sellRate}
-              currency={currency}
-              results={results}
-            />
+            <NetProfitCard currency={currency} results={results} />
 
             <EarningsChart data={chartData} />
           </>

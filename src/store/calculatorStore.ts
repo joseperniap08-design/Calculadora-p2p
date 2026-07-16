@@ -34,7 +34,7 @@ interface PersistedCalculatorState {
 }
 
 function isCommissionRate(value: unknown): value is CommissionRate {
-  return value === 0.0025 || value === 0.0035;
+  return value === 0 || value === 0.0025 || value === 0.0035;
 }
 
 function isCurrency(value: unknown): value is Currency {
@@ -159,7 +159,7 @@ export const useCalculatorStore = create<CalculatorState>()(
     }),
     {
       name: 'p2p-historial-storage',
-      version: 2,
+      version: 3,
       migrate: (persistedState): PersistedCalculatorState =>
         migratePersistedState(persistedState),
       partialize: (state): PersistedCalculatorState => ({
@@ -177,7 +177,10 @@ export const useStore = useCalculatorStore;
 export function useCurrentRates(): CurrencyRates {
   const currency = useCalculatorStore((s) => s.currency);
   const ratesByCurrency = useCalculatorStore((s) => s.ratesByCurrency);
-  return ratesByCurrency[currency];
+  return {
+    ...ratesByCurrency[currency],
+    commissionRate: CURRENCY_CONFIG[currency].commissionRate,
+  };
 }
 
 export function useCalculationResults() {

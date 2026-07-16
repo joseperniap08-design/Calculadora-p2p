@@ -9,6 +9,7 @@ import type {
 import { ceilCurrency, ceilUsdt, roundCurrency } from '@/utils/formatters';
 
 export const COMMISSION_OPTIONS: { label: string; value: CommissionRate }[] = [
+  { label: '0%', value: 0 },
   { label: '0.25%', value: 0.0025 },
   { label: '0.35%', value: 0.0035 },
 ];
@@ -71,7 +72,7 @@ export function calculateP2PResults(inputs: CalculatorInputs): CalculationResult
   const netProfit = ceilCurrency(netProfitRaw);
   const netProfitUsdt = buyRate > 0 ? ceilUsdt(netProfitRaw / buyRate) : 0;
   const profitSpread = buyRate > 0 ? ((sellRate - buyRate) / buyRate) * 100 : 0;
-  const newCapital = roundCurrency(capital + netProfitUsdt);
+  const newCapital = buyRate > 0 ? roundCurrency(sell.netTotal / buyRate) : roundCurrency(capital);
 
   return {
     buy,

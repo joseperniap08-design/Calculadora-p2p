@@ -21,12 +21,7 @@ export function MetaView({ capital, sellRate, currency, results }: MetaViewProps
       </div>
 
       <CapitalCard capital={capital} />
-      <NetProfitCard
-        capital={capital}
-        sellRate={sellRate}
-        currency={currency}
-        results={results}
-      />
+      <NetProfitCard currency={currency} results={results} />
       <MetaProjectionSection gananciaPorCiclo={results.netProfitUsdt} />
     </div>
   );

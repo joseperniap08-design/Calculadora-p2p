@@ -1,22 +1,12 @@
 import type { CalculationResults, Currency } from '@/types';
 import { formatMoney, formatPercent, formatProfitLocal, formatProfitUsdt } from '@/utils/formatters';
-import { getDisplayAmounts } from '@/utils/currencyDisplay';
 
 interface NetProfitCardProps {
-  capital: number;
-  sellRate: number;
   currency: Currency;
   results: CalculationResults;
 }
 
-export function NetProfitCard({ capital, sellRate, currency, results }: NetProfitCardProps) {
-  const display = getDisplayAmounts(
-    capital,
-    results.sell,
-    sellRate,
-    results.netProfitUsdt,
-    results.netProfit,
-  );
+export function NetProfitCard({ currency, results }: NetProfitCardProps) {
   const isProfitable = results.netProfit > 0;
 
   return (
@@ -31,7 +21,7 @@ export function NetProfitCard({ capital, sellRate, currency, results }: NetProfi
             isProfitable ? 'text-green-400' : 'text-red-400'
           }`}
         >
-          {formatProfitUsdt(display.netProfit)}
+          {formatProfitUsdt(results.netProfitUsdt)}
         </p>
 
         {isProfitable && (
@@ -49,17 +39,17 @@ export function NetProfitCard({ capital, sellRate, currency, results }: NetProfi
           isProfitable ? 'text-slate-400' : 'text-slate-500'
         }`}
       >
-        {formatProfitLocal(display.netProfitLocal, currency)}
+        {formatProfitLocal(results.netProfit, currency)}
       </p>
 
       <div className="grid grid-cols-3 gap-3 rounded-xl bg-slate-800/40 p-3">
         <div className="text-center">
-          <p className="text-[10px] uppercase tracking-wider text-slate-500">Spread de Ganancia</p>
+          <p className="text-[10px] uppercase tracking-wider text-slate-500">Spread</p>
           <p className="text-sm font-bold text-white">{formatPercent(results.profitSpread)}</p>
         </div>
         <div className="text-center">
           <p className="text-[10px] uppercase tracking-wider text-slate-500">Nuevo Capital</p>
-          <p className="text-sm font-bold text-white">{formatMoney(display.newCapital)}</p>
+          <p className="text-sm font-bold text-white">{formatMoney(results.newCapital)}</p>
         </div>
         <div className="text-center">
           <p className="text-[10px] uppercase tracking-wider text-slate-500">Resultado</p>
